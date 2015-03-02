@@ -1,0 +1,23 @@
+{
+    "plugins": [
+        "autocover"
+    ],
+    "pluginsConfig": {
+        "autocover": {
+            "title": "Larch Plugin Tutorial",
+            "author": "Bruce Ravel",
+            "font": {
+                "size": null,
+                "family": "Impact",
+                "color": "#0a0a0a"
+            },
+            "size": {
+                "w": 1800,
+                "h": 2360
+            },
+            "background": {
+                "color": "#9b60fa"
+            }
+        }
+    }
+}

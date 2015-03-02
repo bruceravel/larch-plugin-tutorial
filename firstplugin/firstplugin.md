@@ -21,7 +21,7 @@ allow us to examine the contents of a Larch plugin without having to
 spend any attention on understanding what the plugin does.
 
 Here is the entire contents of the file `addtwonumbers.py`:
-```python linenums
+```prettyprint lang-python linenums
 print "hi!"
 
 def addtwo(a=None, b=None):

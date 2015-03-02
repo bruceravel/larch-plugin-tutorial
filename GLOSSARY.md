@@ -11,8 +11,18 @@ and data.  This is very similar to a python class.
 # symbol
 
 A word used by Larch to point to a Group, function, constant, or piece
-of data.  This is a word with special meaning at the Larch command line.
+of data.  This is a word with special meaning at the Larch command
+line.  The collection of symbols recognized by Larch is called the
+"symbol table".
 
-# symbol table
+# XANES
 
-The collection of symbols recognized by Larch.
+X-ray-Absorption Near-Edge Structure
+
+# XAS
+
+X-ray-Absorption Spectroscopy
+
+# EXAFS
+
+Extended X-ray-Absorption Fine-Structure

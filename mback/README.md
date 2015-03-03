@@ -29,6 +29,8 @@ $$\frac{1}{n_1} \sum_{1}^{n_1} \left[\mu_{tab}(E) + \mu_{back}(E) + s\mu_{data}(
 Here, $$\mu_{data}(E)$$ is the measured spectrum and $$\mu_{tab}(E)$$
 is the tabulated cross section.
 
+**:FIXME:** katex does not yet support \mathrm or \operatorname, so
+erfc looks bad....
 
 The plugin that implements this is at
 https://github.com/xraypy/xraylarch/blob/mback/plugins/xafs/mback.py .

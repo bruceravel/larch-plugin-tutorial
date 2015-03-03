@@ -30,3 +30,7 @@ Here, $$\mu_{data}(E)$$ is the measured spectrum and $$\mu_{tab}(E)$$
 is the tabulated cross section.
 
 
+The plugin that implements this is at
+https://github.com/xraypy/xraylarch/blob/mback/plugins/xafs/mback.py .
+Here, we will step through the parts of that file.
+

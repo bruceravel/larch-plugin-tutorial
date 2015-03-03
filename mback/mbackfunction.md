@@ -85,7 +85,7 @@ def mback(energy, mu, group=None, order=3, z=None, edge='K', e0=None, emin=None,
     if edge.lower().startswith('l'): n = 'L'
     params = Group(s      = Parameter(1, vary=True, _larch=_larch),     # scale of data
                    xi     = Parameter(50, vary=fit_erfc, min=0, _larch=_larch), # width of erfc
-                   em     = Parameter(xray_line(z, n, _larch=_larch)[0], vary=False, _larch=_larch), # erfc centroid
+                   em     = Parameter(xray_line(z, n, _larch=_larch)[0], vary=False, _larch=_larch),
                    e0     = Parameter(e0, vary=False, _larch=_larch),   # abs. edge energy
                    en     = energy,
                    mu     = mu,
@@ -111,7 +111,7 @@ def mback(energy, mu, group=None, order=3, z=None, edge='K', e0=None, emin=None,
         j = i+1
         attr = 'c%d' % j
         if hasattr(params, attr):
-            normalization_function  = normalization_function + getattr(getattr(params, attr), 'value') * eoff**j
+            normalization_function = normalization_function + getattr(getattr(params, attr),'value') * eoff**j
     
     group.fpp = params.s*mu - normalization_function
     group.mback_params = params

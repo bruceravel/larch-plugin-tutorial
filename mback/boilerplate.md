@@ -1,9 +1,5 @@
 # Boilerplate for the MBACK plugin
 
-The plugin that implements this is at
-https://github.com/xraypy/xraylarch/blob/mback/plugins/xafs/mback.py .
-Here, we will step through the parts of that file.
-
 First off, at the very end of the file are these lines:
 
 ```python

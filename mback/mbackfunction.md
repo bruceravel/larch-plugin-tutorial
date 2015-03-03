@@ -1,91 +1,4 @@
-# A useful plugin: the MBACK algorithm
-
-Here we will walk through the creation of a Larch plugin for
-[the MBACK algorithm by Tsu-Chien Weng, et al.](http://dx.doi.org/10.1107/S0909049504034193).
-MBACK is a method of normalizing XAS $$\mu(E)$$ by matching it to
-tabulated values of atomic cross sections.
-
-To accommodate instumental and sample-related effects in the
-background of the measured data, this background function is used:
-
-$$\mu_{back}(E) = \left[\sum_0^m C_i(E-E_0)^i\right] + A\cdot\mathrm{erfc}\left((E-E_{em}\right)/\xi)$$
-
-This includes a Legendre polynomial of order *m* added to a
-complementary error function used to approximate the effect of Compton
-scattering in the discriminator window of an energy-discriminating
-detector, which is often respo0nsible for a highly non-linear shape to
-the pre-edge region of the measured $$\mu(E)$$ data.
-
-This normalization function has *m+3* parameters -- *m* Legendre
-polynomial coefficients, the amplitude (*A*) and width ($$\xi$$) of
-the complementary error function, and a scaling factor (*s*) for the
-measured data.  The centroid of the error function ($$E_{em}$$) is set
-to the centroid of the emission line associated with the measured
-absorption edge.  This function is then minimized to determine the
-background function parameters:
-
-$$\frac{1}{n_1} \sum_{1}^{n_1} \left[\mu_{tab}(E) + \mu_{back}(E) + s\mu_{data}(E)\right]^2 + \frac{1}{n_2} \sum_{n_1}^{N} \left[\mu_{tab}(E) + \mu_{back}(E) + s\mu_{data}(E)\right]^2$$
-
-Here, $$\mu_{data}(E)$$ is the measured spectrum and $$\mu_{tab}(E)$$
-is the tabulated cross section.
-
-## Boilerplate for the MBACK plugin
-
-The plugin that implements this is at
-https://github.com/xraypy/xraylarch/blob/mback/plugins/xafs/mback.py .
-Here, we will step through the parts of that file.
-
-First off, at the very end of the file are these lines:
-
-```python
-def registerLarchPlugin(): # must have a function with this name!
-    return ('_xafs', { 'mback': mback })
-```
-
-As discussed in the last chapter, this special construct is what
-allows Larch to recognize this file as a plugin rather than just a
-file containing python code.  Specifically, it registers the symbol
-`mback` as refering to the `mback` function, which we will discuss
-below, and places that symbol into the `_xafs` Group.
-
-At the top of the file are these lines:
-
-```python
-from larch import (Group, Parameter, isgroup, use_plugin_path, Minimizer)
-use_plugin_path('math')
-from mathutils import index_of
-use_plugin_path('xray')
-from cromer_liberman import f1f2
-from xraydb_plugin import xray_edge, xray_line, f2_chantler
-use_plugin_path('std')
-from grouputils import parse_group_args
-use_plugin_path('xafs')
-from xafsutils import set_xafsGroup
-from pre_edge import find_e0
-
-import numpy as np
-from scipy.special import erfc
-
-MAXORDER = 6
-```
-
-The point of the various forms of python's
-[import](https://docs.python.org/2/tutorial/modules.html) statement is
-to make features from various python modules available to our plugin.
-
-The first line imports some functionality from Larch iteself.  The
-various `use_plugin_path` lines tell Larch where to find other Larch
-plugins.  The lines following the `use_plugin_path` lines tell Larch
-to import symbols from other Larch plugins.
-
-We import [NumPy](http.www.numpy.org) so its functionality is
-available to our plugin.  Finally, we import the symbol for the
-complementary error function from [SciPy](http://scipy.org/).
-
-The last line defines a constant which will be used repeatedly
-throughout the MBACK plugin.
-
-## The implementation of the MBACK function
+# The implementation of the MBACK function
 
 Here is the entire `mback` function:
 
@@ -206,7 +119,7 @@ def mback(energy, mu, group=None, order=3, z=None, edge='K', e0=None, emin=None,
 
 It's kind of long, so let's break it down into pieces.
 
-### The function signature
+## The function signature
 
 ```python
 def mback(energy, mu, group=None, order=3, z=None, edge='K', e0=None, emin=None, emax=None,
@@ -222,7 +135,7 @@ The next several lines are the document string for the `mback`
 function.  This can be read at any time from the larch command line by
 `print _xafs.mback.__doc__`.
 
-### Managing the function arguments
+## Managing the function arguments
 
 The next three lines enforce the type (integer) and value
 (1<`order`<6) of the `order` argument, which sets the order of the
@@ -269,7 +182,7 @@ a guess for `e0` based on the content of the data.
         find_e0(energy, mu, group=group)
 ```
 
-### Excluding portions of the data
+## Excluding portions of the data
 
 In certain situations, it is useful to exclude data from the MBACK
 fit.  The `emin` and `emax` arguments allow you to exclude data from
@@ -309,16 +222,16 @@ This array can then be multiplied by the minimization function, which
 has the effect of removing data in the exclusion regions from the
 determination of the parameters.
 
-### Weights for the fit
+## Weights for the fit
 
 In the minimization function given above, the function is split into
 two regions, the first $$n_1$$ data points and all the rest.  Often
 the pre-edge region contains far fewer datapoints than the region
 above the edge.  To make sure that the normalization function does a
-good job of matching the pre-edge data, a different weighting is
-used.  That is the purpose of the $$\frac{1}{n_1}$$ and
-$$\frac{1}{n_2}$$ terms in the minimization function.  The weight
-array accommodates this feature of the MBACK algorithm.
+good job of matching the pre-edge data, a different weighting is used.
+That is the purpose of the $$\frac{1}{n_1}$$ and $$\frac{1}{n_2}$$
+terms in the minimization function.  The weight array accommodates
+this feature of the MBACK algorithm.
 
 ```python
     weight1 = 1*(energy<e0)
@@ -354,7 +267,7 @@ data along with the normalization standard.
 A plugin which operates on a data Group should always put useful and
 relevant arrays, constants, and other symbols in the data Group.
 
-### Setting up the fit parameters
+## Setting up the fit parameters
 
 The next 19 lines establish the parameters of the fit.
 
@@ -436,7 +349,7 @@ used and the parameter is defined to be a variable of the fit.  The
 `setattr` function then makes a parameter symbol, gives it a name like
 `c1` or `c2`, and places it in the `params` group.
 
-### Performing the minimization
+## Performing the minimization
 
 Finally, the minimization happens.
 
@@ -450,34 +363,8 @@ objective function (see below) and the name of Group containing the
 parameters of the fit.  Once the Minimizer object is made, the fit is
 performed by the call to `leastsq()`.
 
-## The objective function for minimization
 
-```python
-def match_f2(p):
-    """
-    Objective function for matching mu(E) data to tabulated f"(E) using the MBACK
-    algorithm or the Lee & Xiang extension.
-    """
-    s      = p.s.value
-    a      = p.a.value
-    em     = p.em.value
-    xi     = p.xi.value
-    c0     = p.c0.value
-    eoff   = p.en - p.e0.value
-
-    norm = a*erfc((p.en-em)/xi) + c0 # erfc function + constant term of polynomial
-    for i in range(MAXORDER):        # successive orders of polynomial
-        j = i+1
-        attr = 'c%d' % j
-        if hasattr(p, attr):
-            norm = norm + getattr(getattr(p, attr), 'value') * eoff**j
-    func = (p.f2 + norm - s*p.mu) * p.theta / p.weight
-    if p.form.lower() == 'lee':
-        func = func / s*p.mu
-    return func
-```
-
-### Finishing up
+## Finishing up
 
 Once the fit is finished, we reconstruct the normalization function
 using the best fit values.  As before, the normalization function is
@@ -510,11 +397,3 @@ contents of a Group in a computed manner, as shown here.
 
 Finally, the matched data are placed in the data Group, as is Group
 containing the parameters of the fit.
-
-## The tricky details
-
-_larch
-
-Parameter, not param
-
-Group, not group

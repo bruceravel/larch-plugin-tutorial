@@ -61,6 +61,8 @@ You will be disappointed.
 In fact, here is what happens:
 
 ```
+larch> a=read_ascii('Talc.xmu')
+larch> mback(a.e, a.xmu, group=a, z=14, edge='K', order=2, whiteline=50, fit_erfc=True)
 larch> plot_mback(a)
   File "/usr/local/share/larch/plugins/xafs/mback.py", line 162, in plot_mback
     newplot(group.energy, group.f2)file <stdin>, line 0
@@ -85,16 +87,16 @@ def registerLarchPlugin():
 ```
 
 followed by over a dozen more symbol definitions.  `MODNAME` is
-defined above as
+defined earlier in the file as
 
 ```python
 MODNAME = '_plotter'
 ```
 
-So that call to `registerLarchPlugin` puts several symbols into the
+So, that call to `registerLarchPlugin` puts several symbols into the
 `_plotter` group.  The function `_plot` is gaven the symbol name
-`plot`.  Unlike the example given in the MBACK plugin, the function
-name and the symbol name *are not the same!*
+`plot` and so on.  Unlike the example given in the MBACK plugin, the
+function name and the symbol name *are not the same!*
 
 The symbol name is how the users accesses the function from the Larch
 command line.  However, when authoring a plugin -- when *programming*
@@ -103,7 +105,7 @@ way.  To use a function, you must use the function name.
 
 So how is this done in practice?  First, you need to import the
 function name into your plugin.  Near the top of the file containing
-theplugin, you would need something like this (you should continue
+the plugin, you would need something like this (you should continue
 editing the plugin file):
 
 ```python
@@ -126,7 +128,7 @@ def plot_mback(group=None):
 Now, when you try to make the plot, this happens:
 
 ```
-larch> a=read_ascii('/home/bruce/Talc.xmu')
+larch> a=read_ascii('Talc.xmu')
 larch> mback(a.e, a.xmu, group=a, z=14, edge='K', order=2, whiteline=50, fit_erfc=True)
 larch> plot_mback(a)
   File "/usr/local/share/larch/plugins/xafs/mback.py", line 162, in plot_mback
@@ -139,11 +141,12 @@ LarchPluginException: plugin function '_newplot' needs a valid '_larch' argument
 
 That's a bit cryptic.
 
-It turns out that the Larch interpreter is, itself, an instance of
-python object.  It is possible to have more that one in existance at
-any time.  The function needs to somehow know that it is supposed to
-use the same instance of the interpreter that is being used at the
-command line you are interacting with.  Here is how that is done:
+It turns out that the Larch interpreter is, itself, an instance of a
+python object.  It is possible to have more that one in existance at a
+time.  Your plotting function needs to somehow know that it is
+supposed to use the same instance of the interpreter that is being
+used at the command line you are interacting with.  Here is how that
+is done:
 
 ```python
 def plot_mback(group=None, _larch=None):
@@ -163,8 +166,8 @@ interpreter, it will use it.  When the `_larch` argument is None,
 Larch will use the default interpreter.  When you are working from the
 command line, the command line interpreter is the default interpreter.
 
-Of course, that function is a bit unprofessional.  Let's make it a bit
-spiffier.
+Of course, not labeling axes is rather unprofessional.  Let's make our
+function a bit spiffier:
 
 ```python
 def plot_mback(group=None, _larch=None):
@@ -180,3 +183,53 @@ Lovely!
 
 ## Symbol names and the Larch interpreter in the MBACK function
 
+Now that we understand the difference between symbol names and
+function names, we can return to use of `Group()` and `Paramater()` in
+the MBACK plugin.  The story is actually slightly different because
+those are functions that are intrinsic to Larch rather than defined in
+a plugin.  But the concept is very similar.
+
+`Group` is the name of the class that implements a Group.  `Parameter`
+is the name of the class the implements a Parameter.  At the Larch
+command line, those are accessed using symbols pointing to the
+`group()` and `parameter()` functions.  These functions return
+references to `Group` and `Parameter` objects, respectively.
+
+In the MBACK plugin, `Group` and `Parameter` are imported from larch
+in the first line of the boilerplate and used throughout.  Whenever 
+`Group` or `Parameter` are used, the `_larch=_larch` argument is given
+so that Larch can correctly resolve the intepreter.
+
+You will notice that the `_larch=_larch` argument is passed to *every
+function* from Larch in the boilerplate at the top of the plugin
+file.  `set_xafsGroup`, `xray_edge`, `xray_line`, `f1_chantler`, and
+so on.  All of them.
+
+The `_larch=_larch` argument has to be used **Every.** **Damn.**
+**Time.**  Forgetting the `_larch=_larch` argument is by far my most
+common error when writing code for Larch.  Bottom line, don't forget
+the `_larch=_larch` argument.
+
+Also note that the `mback` function is defined with `_larch=None` in
+its signature.  That is also a necessity.  Every function you define
+in a plugin should include that in its signature.
+
+None of the Larch functions imported at the top of this plugin have
+the same confusing feature as `newplot` and `plot` from the previous
+section.  (Yay!)  In many cases, Larch plugins use  the same name for
+the function and the symbol.  Indeed, we did so for the `mback`
+function.
+
+To examine how a function that you want to use is exported by its
+Larch plugin, do this from the larch command line:
+
+```
+larch> show _plotter.plot
+<function plot, file=/usr/local/share/larch/plugins/wx/plotter.py>
+```
+
+This tells us where the plot function comes from.  Open the indicated
+file, in this case `/usr/local/share/larch/plugins/wx/plotter.py`, and
+examine the `registerLarchPlugin` at the end of the file.  That will
+tell you the name of the function.  You can then examine the actual
+function in that file if you need to better understand its semantics.

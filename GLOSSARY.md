@@ -1,8 +1,3 @@
-# plugin
-
-A file used to introduce functionality to Larch containing python code
-and a few special pieces of code special to Larch
-
 # Group
 
 A generic container for holding the symbols of functions, constants,
@@ -26,3 +21,11 @@ X-ray-Absorption Spectroscopy
 # EXAFS
 
 Extended X-ray-Absorption Fine-Structure
+
+# diffKK
+
+Differential Kramers-Kronig transform, an algorithm for invoking the
+causality relationship to relate the real part of the
+energy-dependent, complex correction to the Thompson scattering
+($f'(E)$) to the imaginary part ($f''(E)$), which is obtained from a
+measurement of the XAS $\mu(E)$.

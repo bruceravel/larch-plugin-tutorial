@@ -3,7 +3,7 @@
 We will begin with a very simple example of a plugin that provides a
 function for adding two numbers together.  I admit that this is a bit
 silly, since such a thing already exists and is accessed using the `+`
-symbol, as in:
+sign, as in:
 
 ```
 larch> print 2+3
@@ -58,7 +58,7 @@ At line 9, the two input numbers are converted to floating point
 numbers.  This guarantees that the value returned by `addtwo` will
 itself be a floating point number.
 
-Finally at line 10, the sum of the tywo numbers is returned.
+Finally at line 10, the sum of the two numbers is returned.
 
 Lines 12 and 13 are the magic lines which turn this from a file
 containing python code into an actual Larch plugin.  When Larch reads
@@ -68,7 +68,7 @@ found, it puts symbols into its symbol table.
 ## The symbol table
 
 "Symbol table" -- that's a bit of jargon.  To understand the symbol
-table, let's fire up larch at the command line and enter this command:
+table, let's fire up Larch at the command line and enter this command:
 
 ```
 larch> show _main

@@ -16,20 +16,39 @@ scattering in the discriminator window of an energy-discriminating
 detector, which is often respo0nsible for a highly non-linear shape to
 the pre-edge region of the measured $$\mu(E)$$ data.
 
-This normalization function has *m+2* parameters -- *m* Legendre
-polynomial coefficients and the amplitude (*A*) and width ($$\xi$$) of
-the complementary error function.  The centroid of the error function
-($$E_{em}$$) is set to the centroid of the emission line associated
-with the measured absorption edge.  This function is then minimized to
-determine the background function parameters:
+This normalization function has *m+3* parameters -- *m* Legendre
+polynomial coefficients, the amplitude (*A*) and width ($$\xi$$) of
+the complementary error function, and a scaling factor (*s*) for the
+measured data.  The centroid of the error function ($$E_{em}$$) is set
+to the centroid of the emission line associated with the measured
+absorption edge.  This function is then minimized to determine the
+background function parameters:
 
 $$\frac{1}{n_1} \sum_{1}^{n_1} \left[\mu_{tab}(E) + \mu_{back}(E) + s\mu_{data}(E)\right]^2 + \frac{1}{n_2} \sum_{n_1}^{N} \left[\mu_{tab}(E) + \mu_{back}(E) + s\mu_{data}(E)\right]^2$$
 
-Here, $$\mu_{data}(E)$$ is the measured spectrum and $$\mu{tab}(E)$$
+Here, $$\mu_{data}(E)$$ is the measured spectrum and $$\mu_{tab}(E)$$
 is the tabulated cross section.
 
-The plugin that implements this is 
+## Boilerplate for the MBACK plugin
 
+The plugin that implements this is at
+https://github.com/xraypy/xraylarch/blob/mback/plugins/xafs/mback.py .
+Here, we will step through the parts of that file.
+
+First off, at the very end of the file are these lines:
+
+```python
+def registerLarchPlugin(): # must have a function with this name!
+    return ('_xafs', { 'mback': mback })
+```
+
+As discussed in the last chapter, this special construct is what
+allows Larch to recognize this file as a plugin rather than just a
+file containing python code.  Specifically, it registers the symbol
+`mback` as refering to the `mback` function, which we will discuss
+below, and places that symbol into the `_xafs` Group.
+
+At the top of the file are these lines:
 
 ```python
 from larch import (Group, Parameter, isgroup, use_plugin_path, Minimizer)
@@ -48,31 +67,29 @@ import numpy as np
 from scipy.special import erfc
 
 MAXORDER = 6
+```
 
-def match_f2(p):
-    """
-    Objective function for matching mu(E) data to tabulated f"(E) using the MBACK
-    algorithm or the Lee & Xiang extension.
-    """
-    s      = p.s.value
-    a      = p.a.value
-    em     = p.em.value
-    xi     = p.xi.value
-    c0     = p.c0.value
-    eoff   = p.en - p.e0.value
+The point of the various forms of python's
+[import](https://docs.python.org/2/tutorial/modules.html) statement is
+to make features from various python modules available to our plugin.
 
-    norm = a*erfc((p.en-em)/xi) + c0 # erfc function + constant term of polynomial
-    for i in range(MAXORDER):        # successive orders of polynomial
-        j = i+1
-        attr = 'c%d' % j
-        if hasattr(p, attr):
-            norm = norm + getattr(getattr(p, attr), 'value') * eoff**j
-    func = (p.f2 + norm - s*p.mu) * p.theta / p.weight
-    if p.form.lower() == 'lee':
-        func = func / s*p.mu
-    return func
+The first line imports some functionality from Larch iteself.  The
+various `use_plugin_path` lines tell Larch where to find other Larch
+plugins.  The lines following the `use_plugin_path` lines tell Larch
+to import symbols from other Larch plugins.
 
+We import [NumPy](http.www.numpy.org) so its functionality is
+available to our plugin.  Finally, we import the symbol for the
+complementary error function from [SciPy](http://scipy.org/).
 
+The last line defines a constant which will be used repeatedly
+throughout the MBACK plugin.
+
+## The implementation of the MBACK function
+
+Here is the entire `mback` function:
+
+```python
 def mback(energy, mu, group=None, order=3, z=None, edge='K', e0=None, emin=None, emax=None,
           whiteline=None, form='mback', tables='cl', fit_erfc=False, return_f1=False,
           _larch=None):
@@ -185,15 +202,128 @@ def mback(energy, mu, group=None, order=3, z=None, edge='K', e0=None, emin=None,
     
     group.fpp = params.s*mu - normalization_function
     group.mback_params = params
+```
+
+### The function signature
+
+The first three lines provide
+[the signature of the function](http://docs.python-guide.org/en/latest/writing/style/#function-arguments).
+Function signatures are no different in Larch than in normal python.
+
+### Importing symbols
+
+The next several lines are the document string for the `mback`
+function.  This can be read at any time from the larch command line by
+`print _xafs.mback.__doc__`.
+
+### Managing the function arguments
+
+The next three lines enforce the type (integer) and value
+(1<`order`<6) of the `order` argument, which sets the order of the
+Legendre polynomial used in the normalization.
+
+The next four lines enforce
+[Larch's First Argument Group convention](http://cars.uchicago.edu/xraylarch/xafs/utilities.html#first-argument-group-convention),
+which is a way of tersely specifying the data Group on which the
+function is to operate.  This allows the user to specify a Group and
+have Larch use the `.energy` and `.mu` attributes of the group in the
+function.  While this is fine, my personal preference is not to use
+this convention.  For one thing, it seems more clear to me to specify
+the energy and mu arrays.  For another, it allows the user to use
+Group attributes with names other than `.energy` and `.mu` as the
+arguments for the `mback` function.  Those attribute names are not
+guaranteed when using Larch's `read_ascii` function or some of its
+other IO functionality.
+
+The next six lines are used to set the `e0` argument if it is not
+provided.  The default is to use the tabulated value for the specified
+`z` and `edge`.  If that doesn't work and no `e0` value is set for the
+input data group, Larch's `find_e0` function will be run to determine
+a guess for `e0` based on the content of the data.
+
+### Excluding portions of the data
+
+In certain situations, it is useful to exclude data from the MBACK
+fit.  The `emin` and `emax` arguments allow you to exclude data from
+the beginning or end of the data range.  That is used, for instance,
+if the data contain an edge step from another element, which is a data
+feature that this implementation of the MBACK algorithm is not
+designed to handle.
+
+Another use of the exclusion array is to exclude the region around a
+white line from the fit.  In some cases, the white line carries so
+much spectral weight that it skews the fit results, causing the
+matched data to be "slanted" relative to the tabulated data.
+
+The exclusion array, `theta` is initialized as an array for which each
+element is 1.0 and of the same length as the data.  That is, it is
+intended to be interpreted on the same energy grid as the data.  For
+regions of energy to be excluded from the fit, `theta` is set to 0.0.
+This array can then be multiplied by the minimization function, which
+has the effect of removing data in the exclusion regions from the
+determination of the parameters.
+
+### Weights for the fit
+
+In the minimization function given above, the function is split into
+two regions, the first $$n_1$$ data points and all the rest.  Often
+the pre-edge region contains far fewer datapoints than the region
+above the edge.  To make sure that the normalization function does a
+good job of matching the pre-edge data, a different weighting is
+used.  That is the purpose of the $$\frac{1}{n_1}$$ and
+$$\frac{1}{n_2}$$ terms in the minimization function.  The weight
+array accommodates this feature of the MBACK algorithm.
+
+## Tabulated cross section data
+
+The next seven lines gather tabulated values for bare-atom cross
+sections from either the Cromer-Liberman of Chatler tables.  These
+arrays are gnerated on the data grid, broadened by the core-hole
+lifetime, and placed in the data group.  If the `return_cl` flag is
+set to True, the real part of the energy-dependent cross-section is
+also placed in the data group.
+
+Placing these arrays in the data group is an important feature of this
+plugin.  Remember that a Group is simply a container for symbols.  It
+should be a **useful** container.  By placing the cross section data
+in the group, the user is easily able to make plots of the normalized
+data along with the normalization standard.
+
+A plugin which operates on a data Group should always put useful and
+relevant arrays, constants, and other symbols in the data Group.
+
+### Setting up the fit parameters
+
+The next 19 lines establish the parameters of the fit.
 
 
-def registerLarchPlugin(): # must have a function with this name!
-    return ('_xafs', { 'mback': mback })
-    
 
+
+## The objective function for minimization
+
+```python
+def match_f2(p):
+    """
+    Objective function for matching mu(E) data to tabulated f"(E) using the MBACK
+    algorithm or the Lee & Xiang extension.
+    """
+    s      = p.s.value
+    a      = p.a.value
+    em     = p.em.value
+    xi     = p.xi.value
+    c0     = p.c0.value
+    eoff   = p.en - p.e0.value
+
+    norm = a*erfc((p.en-em)/xi) + c0 # erfc function + constant term of polynomial
+    for i in range(MAXORDER):        # successive orders of polynomial
+        j = i+1
+        attr = 'c%d' % j
+        if hasattr(p, attr):
+            norm = norm + getattr(getattr(p, attr), 'value') * eoff**j
+    func = (p.f2 + norm - s*p.mu) * p.theta / p.weight
+    if p.form.lower() == 'lee':
+        func = func / s*p.mu
+    return func
 ```
 
 
-
-
-[Larch's First Argument Group convention](http://cars.uchicago.edu/xraylarch/xafs/utilities.html#first-argument-group-convention)

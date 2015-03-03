@@ -8,7 +8,7 @@ tabulated values of atomic cross sections.
 To accommodate instumental and sample-related effects in the
 background of the measured data, this background function is used:
 
-$$\mu_{back}(E) = \left[\sum_0^m C_i(E-E_0)^i\right] + A\cdot\textrm{erfc}\left((E-E_{em}\right)/\xi)$$
+$$\mu_{back}(E) = \left[\sum_0^m C_i(E-E_0)^i\right] + A\cdot erfc\left((E-E_{em}\right)/\xi)$$
 
 This includes a Legendre polynomial of order *m* added to a
 complementary error function used to approximate the effect of Compton

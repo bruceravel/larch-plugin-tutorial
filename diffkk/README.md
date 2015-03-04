@@ -56,11 +56,11 @@ larch> dkk = diffkk(data.energy, data.xmu, z=29, edge='K', mback_kws={'e0':8979,
 larch> show c
 == diffKK Group: 7 symbols ==
   edge: 'K'
-  energy: array<shape=(612,), type=dtype('float64')>
-  kk: <bound method diffKKGroup.kk of <diffKK Group>>
+  energy: array&lt;shape=(612,), type=dtype('float64')>
+  kk: &lt;bound method diffKKGroup.kk of &lt;diffKK Group>>
   mback_kws: {'e0': 8979, 'order': 4}
-  mu: array<shape=(612,), type=dtype('float64')>
-  plotkk: <bound method diffKKGroup.plotkk of <diffKK Group>>
+  mu: array&lt;shape=(612,), type=dtype('float64')>
+  plotkk: &lt;bound method diffKKGroup.plotkk of &lt;diffKK Group>>
   z: 29
 ```
 
@@ -98,7 +98,7 @@ class diffKKGroup(Group):
             self._larch = _larch
 
     def __repr__(self):
-        return '<diffKK Group>'
+        return '&lt;diffKK Group>'
 ```
 
 In typical fashion, the class has a document string.  The `__init__`
@@ -113,7 +113,7 @@ unambiguous string representation:
 
 ```
 larch> print dkk
-<diffKK Group>
+&lt;diffKK Group>
 ```
 
 The plugin then goes on to define the `kk()` and `plotkk()`
@@ -187,7 +187,6 @@ def kkmclr(e, finp):
     reverse (f''->f') kk transform, using maclaurin series algorithm
     """
     npts = len(e)
-
     fout   = np.zeros(npts)
     factor = -FOPI * (e[-1] - e[0]) / (npts-1)
     ei2    = e**2
@@ -195,7 +194,6 @@ def kkmclr(e, finp):
 
     nptsk  = npts/2
     k      = np.arange(nptsk)
-
     for i in range(npts):
         j    = 2*k + ioff[i]
         de2  = e[j]**2 - ei2[i]

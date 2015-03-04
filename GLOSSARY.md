@@ -27,8 +27,8 @@ Extended X-ray-Absorption Fine-Structure
 Differential Kramers-Kronig transform, an algorithm for invoking the
 causality relationship to relate the real part of the
 energy-dependent, complex correction to the Thompson scattering
-($f'(E)$) to the imaginary part ($f''(E)$), which is obtained from a
-measurement of the XAS $\mu(E)$.
+(f'(E)) to the imaginary part (f''(E)), which is obtained from a
+measurement of the XAS mu(E).
 
 # MBACK
 

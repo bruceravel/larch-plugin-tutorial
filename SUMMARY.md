@@ -1,7 +1,6 @@
 # Summary
 
 * [Introduction](README.md)
-* [Introduction to Larch Plugins](intro/intro.md)
 * [Your First Larch Plugin](firstplugin/firstplugin.md)
 * [A useful plugin: the MBACK algorithm](mback/README.md)
   * [Plugin boilerplate](mback/boilerplate.md)

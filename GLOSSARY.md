@@ -1,7 +1,7 @@
 # Group
 
 A generic container for holding the symbols of functions, constants,
-and data.  This is very similar to a python class.
+and data.  This is implemented as a python class.
 
 # symbol
 
@@ -29,3 +29,10 @@ causality relationship to relate the real part of the
 energy-dependent, complex correction to the Thompson scattering
 ($f'(E)$) to the imaginary part ($f''(E)$), which is obtained from a
 measurement of the XAS $\mu(E)$.
+
+# MBACK
+
+A method to normalize X-ray absorption data to tabulated mass
+absorption coefficients conceived by T.-C. Weng, G. S. Waldo and
+J. E. Penner-Hahn and published in Journal of Synchrotron Radiation
+(2005). 12, 506-510, DOI: 10.1107/S0909049504034193

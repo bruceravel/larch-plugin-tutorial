@@ -34,5 +34,5 @@ so `erfc()` looks bad....
 
 The plugin that implements this is at
 https://github.com/xraypy/xraylarch/blob/mback/plugins/xafs/mback.py .
-Here, we will step through the parts of that file.
+In the next few sections, we will step through the parts of that file.
 

@@ -1,4 +1,4 @@
-# The objective function for minimization
+# The objective function for minimization #
 
 Larch's `minimize` function and its use of objective functions
 [is discussed here](http://xraypy.github.io/xraylarch/fitting/minimize.html).
@@ -31,13 +31,13 @@ def match_f2(p):
     return func
 ```
 
-This is notable in a few ways.
+There are several aspects of this function worthy of discussion.
 
 First, it takes a single argument, which is the `params` Group from
 the `mback` function.  That Group contains all of the parameters,
 constants, and arrays needed to evaluate the fit.
 
-Second, it is not registered in the call to `registerLarchPlugin`.
+Second, it is *not* registered in the call to `registerLarchPlugin`.
 This means that `match_f2` is not a symbol that will be readily
 available to the user of the Larch command line.  That's OK.  The user
 is expected to interact with the `mback` function, which uses this

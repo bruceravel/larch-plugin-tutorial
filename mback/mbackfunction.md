@@ -117,7 +117,7 @@ def mback(energy, mu, group=None, order=3, z=None, edge='K', e0=None, emin=None,
     group.mback_params = params
 ```
 
-It's kind of long, so let's break it down into pieces.
+That's kind of long.  Let's break it down into pieces.
 
 ## The function signature
 
@@ -226,7 +226,7 @@ determination of the parameters.
 
 In the minimization function given above, the function is split into
 two regions, the first $$n_1$$ data points and all the rest.  Often
-the pre-edge region contains far fewer datapoints than the region
+the pre-edge region contains far fewer data points than the region
 above the edge.  To make sure that the normalization function does a
 good job of matching the pre-edge data, a different weighting is used.
 That is the purpose of the $$\frac{1}{n_1}$$ and $$\frac{1}{n_2}$$
@@ -242,8 +242,8 @@ this feature of the MBACK algorithm.
 ## Tabulated cross section data
 
 The next seven lines gather tabulated values for bare-atom cross
-sections from either the Cromer-Liberman of Chatler tables.  These
-arrays are gnerated on the data grid, broadened by the core-hole
+sections from either the Cromer-Liberman of Chantler tables.  These
+arrays are generated on the data grid, broadened by the core-hole
 lifetime, and placed in the data group.  If the `return_cl` flag is
 set to True, the real part of the energy-dependent cross-section is
 also placed in the data group.
@@ -307,19 +307,21 @@ If the complementary error function is included in the fit by setting
 parameter.  The complementary error function centroid $$E_{em}$$ and
 the edge energy are set as constants of the fit.  $$E_{em}$$ is set to
 the centroid of the emission lines associated with the absorption
-edge.
+edge.  Note that $$\xi$$ is
+[constrained](http://xraypy.github.io/xraylarch/fitting/parameters.html#algebraic-constraints)
+never to be negative.
 
 `en`, `mu`, `f2`, `weight`, and `theta` are the arrays needed to
 evaluate the minimization function.  It is convenient to place these
 arrays in the `params` Group.  `form` is a string.  If it is set to
-`lee` then the modification to the minimization function given my
+`lee` then the modification to the minimization function given by
 [Lee and Xiang](http://dx.doi.org/10.1088/0004-637X/702/2/970) will be
 made.
 
 Next the *a* parameter -- the amplitude of the complementary error
 function is set to 0 (which has the effect of setting the entire
 complementary error function to 0) if the input arguments so specify.
-Other wise, *a* is guessed
+Otherwise, *a* is guessed
 
 ```python
     if fit_erfc:
@@ -359,17 +361,17 @@ Finally, the minimization happens.
 ```
 
 A Minimizer object is made.  This takes as arguments the name of the
-objective function (see below) and the name of Group containing the
-parameters of the fit.  Once the Minimizer object is made, the fit is
-performed by the call to `leastsq()`.
+objective function (see the [next section](objectivefunction.md)) and
+the name of the Group containing the parameters of the fit.  Once the
+Minimizer object is made, the fit is performed by the call to
+`leastsq()`.
 
 
 ## Finishing up
 
 Once the fit is finished, we reconstruct the normalization function
-using the best fit values.  As before, the normalization function is
-constructed as the sum of a complementary error function and a
-Legendre polynomial.
+using the best fit values as the sum of the complementary error
+function and the Legendre polynomial.
 
 ```python
     eoff = energy - params.e0.value

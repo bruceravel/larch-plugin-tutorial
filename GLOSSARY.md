@@ -36,3 +36,11 @@ A method to normalize X-ray absorption data to tabulated mass
 absorption coefficients conceived by T.-C. Weng, G. S. Waldo and
 J. E. Penner-Hahn and published in Journal of Synchrotron Radiation
 (2005). 12, 506-510, DOI: 10.1107/S0909049504034193
+
+# vectorization
+
+The conversion of a scalar calculation -- processing a single pair of
+operands at a time -- to a vector implementation -- processing one
+operation on many pairs of operands at once.  This allows you to
+optimize algorithms by using your computer's architecture along with
+highly optimised vector routines, in this case supplied by NumPy.

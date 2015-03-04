@@ -6,7 +6,7 @@ implements the differential Kramers-Kronig transform
 [suggested by Cross and Newville](http://dx.doi.org/10.1103/PhysRevB.58.11215)
 using the MacLaurin series algorithm suggested by Ohta and Ishida,
 Applied Spectroscopy 42:6 (1988) pp. 952-957.  This is a way of
-matching experimental data to tabulated values o fthe imaginary part
+matching experimental data to tabulated values of the imaginary part
 of the energy-dependent correction to the Thompson scattering factor
 and using a
 [Kramers-Kronig transform](https://en.wikipedia.org/wiki/Kramers%E2%80%93Kronig_relations)
@@ -51,6 +51,8 @@ def registerLarchPlugin(): # must have a function with this name!
 
 and here how it is called:
 
+**:FIXME: angle bracket wierdness**
+
 ```
 larch> dkk = diffkk(data.energy, data.xmu, z=29, edge='K', mback_kws={'e0':8979, 'order':4})
 larch> show c
@@ -72,7 +74,7 @@ the `mback_kws` argument, and references to a couple of functions,
 Group being a collection of *things*.
 
 The diffKK Group is defined in the plugin as a class which inherits
-from Larch's Group.  That is, diffKK has all the propoerties of a
+from Larch's Group.  That is, diffKK has all the properties of a
 Larch Group *and* the additional properties given to it in this
 plugin.
 
@@ -171,13 +173,13 @@ def kkmclr_sca(e, finp):
 ```
 
 (I have removed most of the document string and all of the exception
-handling for the sake of bevity.)
+handling for the sake of brevity.)
 
 This has nested loops over the entire range of the arrays containing
 the data to be transformed.  While the inner loops is smaller by a
 factor of 2 than the outer loop, this is effectively of order
-$$(n^2)$$ in calculation time.  It scaled very poorly in time as the
-arrays become large.
+$$(n^2)$$ in calculation time.  It scales poorly in time as the arrays
+become large.
 
 Here is how this is implemented in diffKK:
 
@@ -209,8 +211,8 @@ the elements of the inner loop.  The iteration still happens, but it
 is done behind the scenes using NumPy's efficient vectorization.  This
 is not quite as fast an order $$n$$ calculation, but it is much faster
 than the scalar implementation above.  On the modest and fairly old
-computer I am sitting at to write this, the scaler calculationtakes
+computer I am sitting at to write this, the scalar calculation takes
 about 15 second while the vectorized calculation takes under 2
 seconds.
 
-Take the time to understand how this stuff works!
+Take the time to understand how this stuff works.  It pays off!

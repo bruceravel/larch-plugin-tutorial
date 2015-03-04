@@ -33,6 +33,6 @@ is the tabulated cross section.
 so `erfc()` looks bad....
 
 The plugin that implements this is at
-https://github.com/xraypy/xraylarch/blob/mback/plugins/xafs/mback.py .
+https://github.com/xraypy/xraylarch/blob/master/plugins/xafs/mback.py .
 In the next few sections, we will step through the parts of that file.
 

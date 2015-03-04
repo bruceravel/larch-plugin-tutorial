@@ -65,7 +65,7 @@ function by 0.0 in those regions.
 Finally, this function makes use of [NumPy's](http://www.numpy.org)
 vectorized calculations.  Rather than iterating through the energy
 range (as a Fortran programmer might do), arrays are added and
-multiplied together, relying that NumPy conventions will do the
-iterations correctly and efficiently.  As we will see in the next
-chapter, employing vectorization is a huge win in terms of execution
-time.
+multiplied together, relying on NumPy conventions to do the iterations
+correctly and efficiently.  As we will see in the
+[next chapter](../diffkk/README.md), employing vectorization is a huge
+win in terms of execution time.

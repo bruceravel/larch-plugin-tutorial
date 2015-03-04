@@ -16,13 +16,13 @@ will be able to add together two numbers like so:
 larch> print addtwo(2,3)
 5
 ```
-While this certainly is a trivial and unnecessary example, it wil
+While this certainly is a trivial and unnecessary example, it will
 allow us to examine the contents of a Larch plugin without having to
 spend any attention on understanding what the plugin does.
 
 ## A simple example
 
-Here is the entire contents of the file `addtwonumbers.py`:
+Here is the entire content of the file `addtwonumbers.py`:
 
 ```python
 print "hi!"
@@ -42,7 +42,7 @@ def registerLarchPlugin():
 
 The definition of the `addtwo` function begins at line 3.  The
 signature of the function specifies that it is looking for two
-parameters (i.e. the two numbers to be added together) and sets theor
+parameters (i.e. the two numbers to be added together) and sets their
 default values to `None`.  The next three lines are the document
 string explaining the purpose of the function.  Any user-facing
 function, that is an function that you intend a Larch user to interact
@@ -68,7 +68,8 @@ found, it puts symbols into its symbol table.
 ## The symbol table
 
 "Symbol table" -- that's a bit of jargon.  To understand the symbol
-table, let's fire up Larch at the command line and enter this command:
+table, let's fire up Larch and, at the command line, enter this
+command:
 
 ```
 larch> show _main
@@ -83,7 +84,7 @@ larch> show _main
   _xrf: <Group _xrf>
 ```
 
-This is Larch's master list of symbols, which are all the things --
+This is Larch's master list of symbols, which are all the words --
 functions, scalars, arrays, objects, and so on -- that Larch
 understands.  In essence, it is the master dictionary of words that
 the Larch interpreter can understand at the command line.
@@ -137,7 +138,7 @@ Each of the items in the `_plotter` group is function implementing a
 task related to displaying data.  For example, `newplot` and `plot`
 are the basic functions for plotting line data in two dimensions.
 
-For a function, larch tells you thename of the file in which the
+For a function, larch tells you the name of the file in which the
 function is defined.  This makes it possible to examine the code which
 defines that feature of Larch.
 
@@ -170,6 +171,8 @@ When we register our plugin at lines 12 and 13 of the example above,
 the `addtwo` function is placed in the `_math` group under the symbol
 `addtwo`.  That's what the syntax means.
 
+**:FIXME: get the file locations right!**
+
 Now copy your `addtwonumbers.py` file to `$HOME/.larch/plugins` (on
 Linux or the Mac)  or to `C:\Program Files\larch\plugins` (on
 Windows).  That is a location where you can place a plugin file and
@@ -199,10 +202,10 @@ The `show` line verifies that our `addtwo` function is now in the
 symbol table.  Finally, we verify that `addtwo` works without fancy
 test case.
 
-## Making Larch recognize our function at startup
+## Making Larch recognize our function at start up
 
 Once the plugin is working as expected, we want to put it someplace
-where Larch will recognize it and import it at startup without
+where Larch will recognize it and import it at start up without
 needing to use the `add_plugin` command.
 
 **:FIXME: get the file locations right!**
@@ -214,7 +217,8 @@ Move your file from `$HOME/.larch/plugins/addtwonumbers.py` to
 folder in the plugins location is where Larch looks to find plugin
 files for the `_math` Group.
 
-Now when you start Lacrh, you will immediately find that you do
+Now when you start Larch, you will immediately find that you can do
+
 ```
 larch> show _math.addtwo
 <function addtwo, file=/usr/local/share/larch/plugins/math/addtwonumbers.py>

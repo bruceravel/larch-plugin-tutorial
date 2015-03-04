@@ -45,7 +45,8 @@ to import symbols from other Larch plugins.
 
 We import [NumPy](http.www.numpy.org) so its functionality is
 available to our plugin.  Finally, we import the symbol for the
-complementary error function from [SciPy](http://scipy.org/).
+[complementary error function](http://en.wikipedia.org/wiki/Error_function),
+`erfc`, from [SciPy](http://scipy.org/).
 
 The last line defines a constant which will be used in several places
 in the MBACK plugin.

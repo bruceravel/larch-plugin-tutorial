@@ -7,7 +7,8 @@ def mback(energy, mu, group=None, order=3, z=None, edge='K', e0=None, emin=None,
           whiteline=None, form='mback', tables='cl', fit_erfc=False, return_f1=False,
           _larch=None):
     """
-    Match mu(E) data for tabulated f"(E) using the MBACK algorithm or the Lee & Xiang extension
+    Match mu(E) data for tabulated f"(E) using the MBACK algorithm and,
+	optionally,  the Lee & Xiang extension
 
       energy, mu:    arrays of energy and mu(E)
       order:         order of polynomial [3]
@@ -128,8 +129,9 @@ def mback(energy, mu, group=None, order=3, z=None, edge='K', e0=None, emin=None,
 ```
 
 The first three lines provide
-[the signature of the function](http://docs.python-guide.org/en/latest/writing/style/#function-arguments).
-Function signatures are no different in Larch than in normal python.
+[the signature](http://docs.python-guide.org/en/latest/writing/style/#function-arguments)
+of the function.  Function signatures are no different in Larch than
+in normal python.
 
 The next several lines are the document string for the `mback`
 function.  This can be read at any time from the larch command line by
@@ -153,10 +155,10 @@ which is a way of tersely specifying the data Group on which the
 function is to operate.  This allows the user to specify a Group and
 have Larch use the `.energy` and `.mu` attributes of the group in the
 function.  While this is fine, my personal preference is not to use
-this convention.  For one thing, it seems more clear to me to specify
-the energy and mu arrays.  For another, it allows the user to use
-Group attributes with names other than `.energy` and `.mu` as the
-arguments for the `mback` function.  Those attribute names are not
+this convention.  For one thing, it seems more clear to me explicitly
+to specify the energy and mu arrays.  For another, it allows the user
+to use Group attributes with names other than `.energy` and `.mu` as
+the arguments for the `mback` function.  Those attribute names are not
 guaranteed when using Larch's `read_ascii` function or some of its
 other IO functionality.
 

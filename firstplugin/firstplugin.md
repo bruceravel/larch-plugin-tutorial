@@ -1,4 +1,4 @@
-# Writing your first plugin
+# Your First Larch Plugin
 
 We will begin with a very simple example of a plugin that provides a
 function for adding two numbers together.  I admit that this is a bit

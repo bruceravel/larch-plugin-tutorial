@@ -39,7 +39,7 @@ constants, and arrays needed to evaluate the fit.
 
 Second, it is not registered in the call to `registerLarchPlugin`.
 This means that `match_f2` is not a symbol that will be readily
-available to the user of the Larch command line.  That's ok.  The user
+available to the user of the Larch command line.  That's OK.  The user
 is expected to interact with the `mback` function, which uses this
 function.
 
@@ -56,7 +56,7 @@ of the data to the evaluation of the fit.  This is also the purpose of
 the
 [Lee and Xiang extension](http://dx.doi.org/10.1088/0004-637X/702/2/970)
 to the MBACK algorithm.  It optionally weights the minimization
-function by shape of the $$\mu(E)$$ funxtion, as seen in the next to
+function by shape of the $$\mu(E)$$ function, as seen in the next to
 last line.  The `theta` array is used to exclude regions of the data
 (the beginning or end of the array or the regions around white lines)
 from the minimization function by multiplying the minimization
@@ -66,6 +66,6 @@ Finally, this function makes use of [NumPy's](http://www.numpy.org)
 vectorized calculations.  Rather than iterating through the energy
 range (as a Fortran programmer might do), arrays are added and
 multiplied together, relying that NumPy conventions will do the
-iterations correctly and efficiently.  As we will see in th next
+iterations correctly and efficiently.  As we will see in the next
 chapter, employing vectorization is a huge win in terms of execution
 time.

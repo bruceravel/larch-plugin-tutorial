@@ -113,7 +113,7 @@ from plotter import _newplot, _plot
 ```
 
 This makes those plotting functions available to your plugin.  After
-inlcuding that at the top of the file, you might then change the
+including that at the top of the file, you might then change the
 `plot_mback` function to
 
 ```python
@@ -141,7 +141,7 @@ LarchPluginException: plugin function '_newplot' needs a valid '_larch' argument
 That's a bit cryptic.
 
 It turns out that the Larch interpreter is, itself, an instance of a
-python object.  It is possible to have more that one in existance at a
+python object.  It is possible to have more that one in existence at a
 time.  Your plotting function needs to somehow know that it is
 supposed to use the same instance of the interpreter that is being
 used at the command line you are interacting with.  Here is how that
@@ -184,7 +184,7 @@ Lovely!
 
 Now that we understand the difference between symbol names and
 function names, we can return to the use of `Group()` and
-`Paramater()` in the MBACK plugin.  The story is actually slightly
+`Parameter()` in the MBACK plugin.  The story is actually slightly
 different because those are functions that are intrinsic to Larch
 rather than defined in a plugin.  But the concept is very similar.
 
@@ -197,7 +197,7 @@ references to `Group` and `Parameter` objects, respectively.
 In the MBACK plugin, `Group` and `Parameter` are imported from larch
 in the first line of the boilerplate, then used throughout.  Whenever 
 `Group` or `Parameter` are used, the `_larch=_larch` argument is given
-so that Larch can correctly resolve the intepreter.
+so that Larch can correctly resolve the interpreter.
 
 You will notice that the `_larch=_larch` argument is passed to almost
 *every function* from Larch that was imported among the boilerplate at

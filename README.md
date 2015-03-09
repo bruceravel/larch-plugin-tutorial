@@ -1,10 +1,11 @@
 # Larch Plugin Tutorial
 
-Larch uses a plugin architecture to implement most of its features.
-The reading and writing of various kinds of file, most math functions,
-all functionality for moving motors and reading detectors, and all
-functionality for managing the processing and analysis of synchrotron
-data -- these are all managed via plugins.
+[Larch](http://xraypy.github.io/xraylarch/) uses a plugin architecture
+to implement most of its features.  The reading and writing of various
+kinds of file, most math functions, all functionality for moving
+motors and reading detectors, and all functionality for managing the
+processing and analysis of synchrotron data -- these are all managed
+via plugins.
 
 A plugin is a file written in python with a few lines of special code
 which allow the Larch interpreter to recognize it as a plugin.  While
@@ -20,10 +21,10 @@ unit testing framework for the
 [feff85exafs](https://github.com/xraypy/feff85exafs) project, I
 decided to write this tutorial in hopes of lowering the barrier for
 the next participant in Larch.  To Matt's credit, he has built a
-powerful platform for doing chores at the beamline and with data
-obtained at the beamline.  There is real potential for Larch to become
-part of the synchrotron infrastructure.  That will be particularly
-true if lots of people do neat, new things with Larch.
+powerful platform for doing chores at the beamline and for dealing
+with data obtained at the beamline.  There is real potential for Larch
+to become part of the synchrotron infrastructure.  That will be
+particularly true if lots of people do neat, new things with Larch.
 
 In this tutorial you will learn how plugins are used by Larch and what
 goes into creating a new plugin.  We will start with a toy problem,

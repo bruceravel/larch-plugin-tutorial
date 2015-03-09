@@ -130,8 +130,9 @@ def mback(energy, mu, group=None, order=3, z=None, edge='K', e0=None, emin=None,
 
 The first three lines provide
 [the signature](http://docs.python-guide.org/en/latest/writing/style/#function-arguments)
-of the function.  Function signatures are no different in Larch than
-in normal python.
+of the function.  This sets the input interface for the function and
+defines default values for most of the input parameters.  Function
+signatures are no different in Larch than in normal python.
 
 The next several lines are the document string for the `mback`
 function.  This can be read at any time from the larch command line by
@@ -152,15 +153,7 @@ Legendre polynomial used in the normalization.
 The next four lines enforce
 [Larch's First Argument Group convention](http://cars.uchicago.edu/xraylarch/xafs/utilities.html#first-argument-group-convention),
 which is a way of tersely specifying the data Group on which the
-function is to operate.  This allows the user to specify a Group and
-have Larch use the `.energy` and `.mu` attributes of the group in the
-function.  While this is fine, my personal preference is not to use
-this convention.  For one thing, it seems more clear to me explicitly
-to specify the energy and mu arrays.  For another, it allows the user
-to use Group attributes with names other than `.energy` and `.mu` as
-the arguments for the `mback` function.  Those attribute names are not
-guaranteed when using Larch's `read_ascii` function or some of its
-other IO functionality.
+function is to operate.  
 
 ```python
     energy, mu, group = parse_group_args(energy, members=('energy', 'mu'),
@@ -169,11 +162,18 @@ other IO functionality.
     group = set_xafsGroup(group, _larch=_larch)
 ```
 
+This allows the user to specify a Group and have Larch use the
+`.energy` and `.mu` attributes of the group in the function.  While
+this is fine, my personal preference is not to use this convention.
+For one thing, it seems more clear to me explicitly to specify the
+energy and mu arrays.  For another, it allows the user to use Group
+attributes with names other than `.energy` and `.mu` as the arguments
+for the `mback` function.  Those attribute names are not guaranteed
+when using Larch's `read_ascii` function or some of its other IO
+functionality.
+
 The next six lines are used to set the `e0` argument if it is not
-provided.  The default is to use the tabulated value for the specified
-`z` and `edge`.  If that doesn't work and no `e0` value is set for the
-input data group, Larch's `find_e0` function will be run to determine
-a guess for `e0` based on the content of the data.
+provided.
 
 ```python
     if e0 is None:              # need to run find_e0:
@@ -183,6 +183,11 @@ a guess for `e0` based on the content of the data.
     if e0 is None:
         find_e0(energy, mu, group=group)
 ```
+
+The default is to use the tabulated value for the specified
+`z` and `edge`.  If that doesn't work and no `e0` value is set for the
+input data group, Larch's `find_e0` function will be run to determine
+a guess for `e0` based on the content of the data.
 
 ## Excluding portions of the data
 
@@ -244,11 +249,14 @@ this feature of the MBACK algorithm.
 ## Tabulated cross section data
 
 The next seven lines gather tabulated values for bare-atom cross
-sections from either the Cromer-Liberman of Chantler tables.  These
-arrays are generated on the data grid, broadened by the core-hole
-lifetime, and placed in the data group.  If the `return_cl` flag is
-set to True, the real part of the energy-dependent cross-section is
-also placed in the data group.
+sections from either
+[the Cromer-Liberman or Chantler tables](http://xraypy.github.io/xraylarch/xray/index.html#x-ray-properties-of-the-elements).
+These arrays are generated on the data grid, broadened by the
+core-hole lifetime, and placed in the data group.  If the `return_cl`
+flag is set to True, the real part of the energy-dependent
+cross-section is also placed in the data group.  (The real part is
+needed by the `diffkk` plugin, which relies upon this plugin for
+normalization).
 
 ```python
     if tables.lower() == 'chantler':
@@ -266,8 +274,8 @@ should be a **useful** container.  By placing the cross section data
 in the group, the user is easily able to make plots of the normalized
 data along with the normalization standard.
 
-A plugin which operates on a data Group should always put useful and
-relevant arrays, constants, and other symbols in the data Group.
+A plugin which operates on a data Group will almost always put useful
+and relevant arrays, constants, and other symbols in the data Group.
 
 ## Setting up the fit parameters
 
@@ -305,7 +313,7 @@ The first parameter set is the scale for the measured data, *s*.  This
 is made into a Larch Parameter and flagged as a variable.
 
 If the complementary error function is included in the fit by setting
-`fit_ercf` to True, then the width $$\xi$$ is marked as variable
+`fit_erfc` to True, then the width $$\xi$$ is marked as variable
 parameter.  The complementary error function centroid $$E_{em}$$ and
 the edge energy are set as constants of the fit.  $$E_{em}$$ is set to
 the centroid of the emission lines associated with the absorption
@@ -317,13 +325,13 @@ never to be negative.
 evaluate the minimization function.  It is convenient to place these
 arrays in the `params` Group.  `form` is a string.  If it is set to
 `lee` then the modification to the minimization function given by
-[Lee and Xiang](http://dx.doi.org/10.1088/0004-637X/702/2/970) will be
-made.
+[Lee and Xiang (see Eq. 3)](http://dx.doi.org/10.1088/0004-637X/702/2/970)
+will be made.
 
 Next the *a* parameter -- the amplitude of the complementary error
 function is set to 0 (which has the effect of setting the entire
-complementary error function to 0) if the input arguments so specify.
-Otherwise, *a* is guessed
+complementary error function to 0) if the `fit_erfc` input parameter
+is False.  Otherwise, *a* is guessed
 
 ```python
     if fit_erfc:
@@ -351,7 +359,7 @@ First the parameter name is made using the
 Like the parameters defined above, the Larch's `Parameter` function is
 used and the parameter is defined to be a variable of the fit.  The
 `setattr` function then makes a parameter symbol, gives it a name like
-`c1` or `c2`, and places it in the `params` group.
+`c1` or `c2`, and places it in the `params` Group.
 
 ## Performing the minimization
 
@@ -399,5 +407,6 @@ digs the best fit value for each Legendre polynomial coefficient out
 of `params`.  That's a bit unwieldy, but is required when probing the
 contents of a Group in a computed manner, as shown here.
 
-Finally, the matched data are placed in the data Group, as is Group
-containing the parameters of the fit.
+Finally, the matched data are placed in the data Group, as is the
+`params` Group which allows the user access ot the parameters of the
+fit.

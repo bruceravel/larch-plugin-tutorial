@@ -5,7 +5,7 @@ Here we will walk through the creation of a Larch plugin for
 MBACK is a method of normalizing XAS $$\mu(E)$$ by matching it to
 tabulated values of atomic cross sections.
 
-To accommodate instumental and sample-related effects in the
+To accommodate instrumental and sample-related effects in the
 background of the measured data, this background function is used:
 
   $$\mu_{back}(E) = \left[\sum_0^m C_i(E-E_0)^i\right] + A\cdot erfc\left((E-E_{em}\right)/\xi)$$
@@ -13,7 +13,7 @@ background of the measured data, this background function is used:
 This includes a Legendre polynomial of order *m* added to a
 complementary error function used to approximate the effect of Compton
 scattering in the discriminator window of an energy-discriminating
-detector, which is often respo0nsible for a highly non-linear shape to
+detector, which is often responsible for a highly non-linear shape to
 the pre-edge region of the measured $$\mu(E)$$ data.
 
 This normalization function has *m+3* parameters -- *m* Legendre
@@ -30,7 +30,7 @@ Here, $$\mu_{data}(E)$$ is the measured spectrum and $$\mu_{tab}(E)$$
 is the tabulated cross section.
 
 **:FIXME:** katex does not yet support `\mathrm` or `\operatorname`,
-so `erfc()` looks bad....
+so `erfc()` looks bad....  Also display math would be nice.
 
 The plugin that implements this is at
 https://github.com/xraypy/xraylarch/blob/master/plugins/xafs/mback.py .

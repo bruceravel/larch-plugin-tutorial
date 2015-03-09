@@ -2,7 +2,7 @@
 
 In the Larch document, Groups
 [are described here](http://xraypy.github.io/xraylarch/tutorial/datatypes.html#groups).
-In that section, you are told that to make your own Groups, you use
+In that section, you are told that, to make your own Groups, you use
 the `group()` function.  While that is certainly correct practice at
 the Larch command line, you have no doubt noticed that the `params`
 Group was created using the `Group()` function, with a capital "G".
@@ -97,7 +97,7 @@ So, that call to `registerLarchPlugin` puts several symbols into the
 `plot` and so on.  Unlike the example given in the MBACK plugin, the
 function name and the symbol name *are not the same!*
 
-The symbol name is how the users access the function from the Larch
+The symbol name is how the user accesses the function from the Larch
 command line.  However, when authoring a plugin -- when *programming*
 with Larch -- you do not have access to the symbol names in the same
 way.  To use a function, you must import and use the function name.
@@ -114,7 +114,7 @@ from plotter import _newplot, _plot
 
 This makes those plotting functions available to your plugin.  After
 including that at the top of the file, you might then change the
-`plot_mback` function to
+`plot_mback` function to use the underscores:
 
 ```python
  ### !!! Note: this is still not quite correct!!!!
@@ -165,7 +165,7 @@ be used.  If the `_larch` argument is None, Larch will use the
 default interpreter.  When you are working from the command line, the
 interpreter at the command line is the default interpreter.
 
-Of course, not labeling axes is so unprofessional.  Let's make our
+Of course, not labeling axes is *so* unprofessional.  Let's make our
 function a bit spiffier:
 
 ```python

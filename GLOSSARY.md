@@ -27,7 +27,7 @@ Extended X-ray-Absorption Fine-Structure
 Differential Kramers-Kronig transform, an algorithm for invoking the
 causality relationship to relate the real part of the
 energy-dependent, complex correction to the Thompson scattering
-(f'(E)) to the imaginary part (f''(E)), which is obtained from a
+(f1(E)) to the imaginary part (f2(E)), which is obtained from a
 measurement of the XAS mu(E).
 
 # MBACK
@@ -42,5 +42,6 @@ J. E. Penner-Hahn and published in Journal of Synchrotron Radiation
 The conversion of a scalar calculation -- processing a single pair of
 operands at a time -- to a vector implementation -- processing one
 operation on many pairs of operands at once.  This allows you to
-optimize algorithms by using your computer's architecture along with
-highly optimised vector routines, in this case supplied by NumPy.
+optimize algorithms by using the architecture of your computer
+hardware along with highly optimised vector routines, in this case
+supplied by NumPy.

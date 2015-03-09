@@ -26,7 +26,7 @@ Larch's symbol table.  This function is intended for use with an
 existing data Group.
 
 The diffKK plugin takes a slightly different approach.  It too
-exposes on function to Larch's symbol table.  This function is called
+exposes a function in Larch's symbol table.  This function is called
 `diffkk` and returns a reference to a `diffKK` Group.  Here's what
 that looks like:
 
@@ -66,8 +66,8 @@ larch> show c
   z: 29
 ```
 
-The `diffkk` function created and returned a `diffKK` group, which is
-called `dkk`.  This group contains the energy and $$\mu(E)$$ arrays,
+The `diffkk` function creates and returns a `diffKK` Group, which is
+called `dkk`.  This Group contains the energy and $$\mu(E)$$ arrays,
 the scalar values of `z` and `edge` arguments, the dictionary value of
 the `mback_kws` argument, and references to a couple of functions,
 `kk()` and `plotkk()`.  This really underscores the definition of a
@@ -118,16 +118,15 @@ larch> print dkk
 &lt;diffKK Group>
 ```
 
-The plugin then goes on to define the `kk()` and `plotkk()`
-functions.  These perform the KK transform and plot the results.
-These commands
+The plugin then goes on to define the `kk()` and `plotkk()` functions.
+Using the `dkk` group defined by the commmand above, you can perform
+the KK transform and plot the results.  These commands post a plot
+to the screen:
 
 ```
 larch> dkk.kk()
 larch> dkk.plotkk()
 ```
-
-post this plot to the screen:
 
 ![diffKK analysis of copper foil](diffkk_copper.png)
 
@@ -212,7 +211,8 @@ is done behind the scenes using NumPy's efficient vectorization.  This
 is not quite as fast an order $$n$$ calculation, but it is much faster
 than the scalar implementation above.  On the modest and fairly old
 computer I am sitting at to write this, the scalar calculation takes
-about 15 second while the vectorized calculation takes under 2
+about 15 seconds while the vectorized calculation takes under 2
 seconds.
 
-Take the time to understand how this stuff works.  It pays off!
+Take the time to understand how this vectorized math stuff works.  It
+pays off!

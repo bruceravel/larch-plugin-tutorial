@@ -25,7 +25,7 @@ spend any attention on understanding what the plugin does.
 Here is the entire content of the file `addtwonumbers.py`:
 
 ```python
-print "hi!"
+print "Hi!  Your plugin is being imported."
 
 def addtwo(a=None, b=None):
 	"""
@@ -65,6 +65,10 @@ containing python code into an actual Larch plugin.  When Larch reads
 this file, it looks for a function called `registerLarchPlugin`.  If
 found, it puts symbols into its symbol table.
 
+Line 1 is included in this example so that we can get visual feedback
+at the command line as Larch imports and interprets the content of
+this plugin.
+
 ## The symbol table
 
 "Symbol table" -- that's a bit of jargon.  To understand the symbol
@@ -84,20 +88,20 @@ larch> show _main
   _xrf: <Group _xrf>
 ```
 
-This is Larch's master list of symbols, which are all the words --
-functions, scalars, arrays, objects, and so on -- that Larch
-understands.  In essence, it is the master dictionary of words that
-the Larch interpreter can understand at the command line.
+This is Larch's master list of symbols, which are all the words
+indicating all the functions, scalars, arrays, objects, and so on that
+Larch understands.  In essence, it is the master dictionary of words
+that the Larch interpreter can understand at the command line.
 
-Each of the items listed is a Group, which is best thought of as a
-simple container for other symbols.  We can examine each of these
+Each of the items listed here is a Group, which is best thought of as
+a simple container for other symbols.  We can examine each of these
 Groups, for instance:
 
 ```
 larch> show _main._plotter
 ```
 
-This will show the contents of the `_plotter` group.  It is not
+This will show the contents of the `_plotter` Group.  It is not
 actually necessary to specify `_main`.  When using the `show` command,
 Larch will assume that you mean to display a symbol in the `_main`
 group.  Thus you can simply type:
@@ -134,13 +138,13 @@ and this will show:
   xrf_plot: <function xrf_plot, file=/usr/local/share/larch/plugins/wx/plotter.py>
 ```
 
-Each of the items in the `_plotter` group is function implementing a
+Each of the items in the `_plotter` Group is function implementing a
 task related to displaying data.  For example, `newplot` and `plot`
 are the basic functions for plotting line data in two dimensions.
 
 For a function, larch tells you the name of the file in which the
-function is defined.  This makes it possible to examine the code which
-defines that feature of Larch.
+function is defined.  This makes it easy to locate the code which
+defines a feature of Larch for further examination.
 
 You can see the document string associated with a function like so:
 
@@ -163,12 +167,12 @@ of `__doc__`.
 ## Placing our function in the _math group
 
 Our toy function is a mathematical operation, so it makes sense to
-place it in the `_math` group.  If you show the `_math` group, a few
+place it in the `_math` group.  If you show the `_math` Group, a few
 hundred lines of stuff is displayed.  There are a lot of functions,
 constants (like `pi`), and other things in that Group.
 
 When we register our plugin at lines 12 and 13 of the example above,
-the `addtwo` function is placed in the `_math` group under the symbol
+the `addtwo` function is placed in the `_math` Group under the symbol
 `addtwo`.  That's what the syntax means.
 
 **:FIXME: get the file locations right!**
@@ -182,7 +186,7 @@ Fire up larch and do:
 
 ```
 larch> add_plugin('addtwonumbers')
-hi!
+Hi!  Your plugin is being imported.
 True
 larch> show _math.addtwo
 <function addtwo, file=/home/bruce/.larch/plugins/addtwonumbers.py>
@@ -211,11 +215,11 @@ needing to use the `add_plugin` command.
 **:FIXME: get the file locations right!**
 
 Move your file from `$HOME/.larch/plugins/addtwonumbers.py` to
-`$HOME/.larch/plugins/math/addtwonumbers.py` or from 
-`C:\Program Files\larch\plugins\addtwonumbers.py`
-`C:\Program Files\larch\plugins\math\addtwonumbers.py`.  The `math`
-folder in the plugins location is where Larch looks to find plugin
-files for the `_math` Group.
+`$HOME/.larch/plugins/math/addtwonumbers.py` or from `C:\Program
+Files\larch\plugins\addtwonumbers.py` `C:\Program
+Files\larch\plugins\math\addtwonumbers.py`.  The `math/` folder in the
+plugins location is where Larch looks to find plugin files for the
+`_math` Group.
 
 Now when you start Larch, you will immediately find that you can do
 
@@ -226,4 +230,5 @@ larch> addtwo(2,3)
 5.0
 ```
 
-That's a plugin.  Now let's do something a bit more interesting.
+That's a plugin.  Now let's do something that's actually interesting
+and useful.
